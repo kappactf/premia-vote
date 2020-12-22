@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <title>CTF-2020 ⋅ Voting Zone</title>
+    <link rel="stylesheet" href="/assets/css/vote.css?1" />
+  </head>
+  <body>
+    <div class="container mt-5 mb-5">
+      <h1>CTF-2020</h1>
+
+      <p>
+        До начала заседания получите <strong>токены</strong> для каждой номинации.
+        Сохраните их в надёжном месте и не потеряйте — без них вы не сможете проголосовать.
+        Выдача новых токенов взамен утерянных технически невозможна.
+        Не запрашивайте токены дважды: проверка факта повторной выдачи токенов технически невозможна.
+      </p>
+      <p>
+        Если к началу заседания не у всех экспертов будет по одному токену в каждой номинации, то вся процедура будет запущена повторно.
+      </p>
+      <p>
+        Каждый токен является 10-буквенной последовательностью, первый символ которого (буква от <code>a</code> до <code>j</code>) соответствует номинации.
+      </p>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Номинация</th>
+            <th>Токен</th>
+            <th>Голосовать</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for nomination in nominations %}
+          <tr>
+            <td>{{ nomination.id }}</td>
+            <td>{{ nomination.name }}</td>
+            <td>
+              <form method="POST" action="/token/{{ nomination.id }}" id="form-{{ nomination.id }}">
+                <button data-nomination-id="{{ nomination.id }}" class="btn btn-success token-button">Получить</button>
+              </form>
+            </td>
+            <td>
+              <a class="btn btn-warning" href="/vote/{{ nomination.id }}">Голосовать</a>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+
+      <p class="text-muted">&copy; Kappa CTF 2020</p>
+
+      <script src="/assets/js/dashboard.js"></script>
+    </div>
+  </body>
+</html>

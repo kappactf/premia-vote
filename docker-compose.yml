@@ -1,0 +1,19 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - ./pg:/var/lib/postgresql/data
+    env_file: db.env
+  py:
+    build: app
+    image: kappactf/premia-vote:2020
+    restart: always
+    volumes:
+      - ./app:/app
+    env_file: app.env
+    ports:
+      - "${WEB_PORT}:80"
+    depends_on:
+      - db

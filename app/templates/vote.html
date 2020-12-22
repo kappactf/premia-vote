@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <title>CTF-2020 ⋅ Voting Zone</title>
+    <link rel="stylesheet" href="/assets/css/vote.css?1" />
+  </head>
+  <body>
+    <div class="container mt-5 mb-5">
+      <h1>Избирательный бюллютень</h1>
+
+      <p>Эксперта Национальной премии «CTF-2020» в номинации <strong>{{ nomination.name }}</strong>.</p>
+
+      {% if not token %}
+      <p>Для перехода к голосованию введите ваш токен.</p>
+
+      <form method="POST">
+          <div class="mb-3">
+              <label for="token" class="form-label">Ваш токен</label>
+              <input type="password" class="form-control" id="token" name="token" placeholder="Введите ваш токен" />
+          </div>
+
+          <input type="hidden" name="action" value="bulletin" />
+
+          <p class="mb-3"><button class="btn btn-success">Продолжить</button></p>
+      </form>
+      {% endif %}
+
+      {% if error %}
+      <div class="alert alert-danger">
+          {{ error }}
+      </div>
+      {% endif %}
+
+      {% if token %}
+      <h3>Инструкция по заполнению бюллютеня</h3>
+      <p>Ознакомьтесь с номинантами Премии в выбранной номинации. Затем напротив каждого номинанта укажите натуральное число от 1 до <em>N</em>, где <em>N</em> — число номинантов, таким образом, что каждое из чисел используется только один раз. После этого проверьте, что указанные числа соответствуют вашему волеизъявлению и нажмите кнопку «Отправить».</p>
+
+      {% if votes|length > 0 %}
+      <h3>Предыдущие голоса</h3>
+
+      <p>Вы уже голосовали, однако, если вы проголосуете снова, ваш предыдущий голос не будет учтён.</p>
+      {% endif %}
+
+      <h3>Номинанты</h3>
+
+      <form method="POST" action="">
+          <input type="hidden" name="action" value="vote" />
+          <input type="hidden" name="token" value="{{ token.value }}" />
+
+          <table class="table">
+              <thead>
+                  <tr>
+                      <th>#</th>
+                      <th>Номинант</th>
+                      <th class="vote-column">Оценка</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% set nomineeCount = nomination.nominees|length %}
+                  {% for nominee in nomination.nominees %}
+                  <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ nominee }}</td>
+                    <td class="vote-column">
+                        <input type="number" name="nominee-{{ loop.index }}"
+                            placeholder="1–{{ nomineeCount }}" required
+                            min="1" max="{{ nomineeCount }}" />
+                    </td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+
+          <p><button class="btn btn-primary">Проголосовать</button></p>
+      </form>
+      {% endif %}
+
+      <p class="text-muted">&copy; Kappa CTF 2020</p>
+
+      <script>
+          window.nominationId = {{ nomination.id }};
+      </script>
+      <script src="/assets/js/vote.js"></script>
+    </div>
+  </body>
+</html>
